@@ -6,42 +6,24 @@ import SignInScreen from '../screens/SignInScreen';
 import SignUpScreen from '../screens/SignUpScreen';
 import Home from '../screens/Home';
 import Add from '../screens/Add';
+import {onAuthStateChanged} from 'firebase/auth'
 
 const Stack = createNativeStackNavigator();
 
 const Navigation = () => {
-  const [user, setUser] = useState(null);
-  const [initializing, setInitializing] = useState(true);
 
-  useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
-      setUser(user);
-      if (initializing) setInitializing(false);
-    });
-
-    return unsubscribe; // Limpia la suscripción
-  }, [initializing]);
-
-  if (initializing) return null; // O muestra una pantalla de carga
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        {user ? (
-          <>
+      <Stack.Navigator initialRouteName='SignIn'>
             <Stack.Screen name="Home" component={Home} options={{ title: 'Home' }} />
             <Stack.Screen
               name="Add"
               component={Add}
               options={{ presentation: 'modal', title: 'Agregar productos' }}
             />
-          </>
-        ) : (
-          <>
             <Stack.Screen name="SignIn" component={SignInScreen} options={{ title: 'Sign In' }} />
             <Stack.Screen name="SignUp" component={SignUpScreen} options={{ title: 'Sign Up' }} />
-          </>
-        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
